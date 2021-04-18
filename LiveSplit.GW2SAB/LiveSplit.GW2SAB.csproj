@@ -36,7 +36,7 @@
             <Private>True</Private>
         </Reference>
         <Reference Include="LiveSplit.Core">
-            <HintPath>..\LiveSplit.Core.dll</HintPath>
+            <HintPath>..\..\LiveSplit.Core.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
             <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -57,10 +57,6 @@
         <Reference Include="System.Numerics"/>
         <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
             <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-            <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.5.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-            <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
             <Private>True</Private>
         </Reference>
         <Reference Include="System.Text.Encodings.Web, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
@@ -88,7 +84,7 @@
         <Reference Include="System.Xml"/>
         <Reference Include="UpdateManager, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
             <SpecificVersion>False</SpecificVersion>
-            <HintPath>..\..\..\..\Downloads\LiveSplit_1.8.15\UpdateManager.dll</HintPath>
+            <HintPath>..\..\UpdateManager.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
@@ -100,4 +96,7 @@
         <None Include="packages.config"/>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+    <PropertyGroup>
+        <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).*" "$(SolutionDir)\..\Components\"</PostBuildEvent>
+    </PropertyGroup>
 </Project>
