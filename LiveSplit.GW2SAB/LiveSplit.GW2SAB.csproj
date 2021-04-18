@@ -89,6 +89,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Area2D.cs"/>
+        <Compile Include="AreaType.cs"/>
         <Compile Include="Checkpoints.cs"/>
         <Compile Include="Component.cs"/>
         <Compile Include="Factory.cs"/>

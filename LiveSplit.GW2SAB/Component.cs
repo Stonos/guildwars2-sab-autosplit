@@ -14,9 +14,12 @@ namespace LiveSplit.GW2SAB
 {
     public class Component : IComponent
     {
+        private const int BossKillOffsetMs = 31250;
+
         private readonly Gw2Client _client;
         private TimerModel _timer;
         private int _lastCheckpoint = -1;
+        private bool wasPlayingTransition;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
@@ -85,7 +88,9 @@ namespace LiveSplit.GW2SAB
                 StartTimerIfNeeded();
             }
 
+            var lastTick = _client.Mumble.Tick;
             _client.Mumble.Update();
+            var playingTransition = lastTick == _client.Mumble.Tick;
             var avatarPosition = AvatarPosition;
             var avatarPosition2D = new Coordinates2(AvatarPosition.X, AvatarPosition.Z);
             Log.Info($"\nnew Coordinates2({avatarPosition.X}, {avatarPosition.Z}),");
@@ -93,20 +98,60 @@ namespace LiveSplit.GW2SAB
             for (var i = _lastCheckpoint + 1; i < Checkpoints.W1Checkpoints.Count; i++)
             {
                 var checkpoint = Checkpoints.W1Checkpoints[i];
-                var isOnCheckpoint = checkpoint.IsPointInArea(avatarPosition2D);
-                if (isOnCheckpoint)
-                {
-                    _lastCheckpoint = i;
+                var isOnArea = checkpoint.IsPointInArea(avatarPosition2D);
+
+                if (!isOnArea) continue;
+
+                handleStandingOnArea(checkpoint, i, state, playingTransition);
+
+                break;
+            }
+
+            wasPlayingTransition = playingTransition;
+        }
+
+        private void handleStandingOnArea(Area2D checkpoint, int checkpointIndex, LiveSplitState state,
+            bool playingTransition)
+        {
+            switch (checkpoint.AreaType)
+            {
+                case AreaType.StartingArea:
+                    if (wasPlayingTransition)
+                    {
+                        _timer.Reset();
+                    }
+
+                    break;
+
+                case AreaType.Checkpoint:
+                    _lastCheckpoint = checkpointIndex;
                     _timer.Split();
                     break;
-                }
+
+                case AreaType.Boss:
+                    if (playingTransition)
+                    {
+                        var currentSplit = state.CurrentSplit;
+                        _timer.Split();
+                        currentSplit.SplitTime =
+                            new Time(currentSplit.SplitTime.RealTime?.Subtract(
+                                TimeSpan.FromMilliseconds(BossKillOffsetMs)));
+                    }
+
+                    break;
             }
         }
 
         private void InitTimer(LiveSplitState state)
         {
             _timer = new TimerModel {CurrentState = state};
+            _timer.OnReset += state_onReset;
             _client.Mumble.Update();
+        }
+
+        private void state_onReset(object sender, TimerPhase timerPhase)
+        {
+            _lastCheckpoint = 0;
         }
 
         private void StartTimerIfNeeded()

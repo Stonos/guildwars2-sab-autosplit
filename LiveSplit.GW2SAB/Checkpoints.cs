@@ -7,6 +7,13 @@ namespace LiveSplit.GW2SAB
     {
         public static readonly IList<Area2D> W1Checkpoints = new List<Area2D>
         {
+            new Area2D( // W1Z1 starting area
+                new Coordinates2(-1419.16613769531, 485.513458251953),
+                new Coordinates2(-1417.16613769531, 485.513458251953),
+                new Coordinates2(-1417.16613769531, 483.513458251953),
+                new Coordinates2(-1419.16613769531, 483.513458251953),
+                AreaType.StartingArea
+            ),
             new Area2D( // W1Z1 checkpoint 1
                 new Coordinates2(-1249.08032226563, 491.485504150391),
                 new Coordinates2(-1247.06164550781, 488.676849365234),
@@ -37,11 +44,19 @@ namespace LiveSplit.GW2SAB
                 new Coordinates2(-837.490417480469, 459.593444824219),
                 new Coordinates2(-839.508239746094, 456.984771728516)
             ),
+            new Area2D( // W1Z1 boss area
+                new Coordinates2(-843.380615234375, 487.674133300781),
+                new Coordinates2(-831.083557128906, 472.828460693359),
+                new Coordinates2(-842.870361328125, 461.533081054688),
+                new Coordinates2(-855.393859863281, 473.586303710938),
+                AreaType.Boss
+            ),
             new Area2D( // W1Z2 starting area
                 new Coordinates2(-701.850891113281, 506.692169189453),
                 new Coordinates2(-699.850891113281, 506.692169189453),
                 new Coordinates2(-699.850891113281, 504.692169189453),
-                new Coordinates2(-701.850891113281, 504.692169189453)
+                new Coordinates2(-701.850891113281, 504.692169189453),
+                AreaType.StartingArea
             ),
         }.AsReadOnly();
     }

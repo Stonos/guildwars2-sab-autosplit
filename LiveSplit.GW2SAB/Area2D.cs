@@ -8,6 +8,7 @@ namespace LiveSplit.GW2SAB
     public readonly struct Area2D
     {
         public Coordinates2[] Polygon { get; }
+        public AreaType AreaType { get; }
 
         /// <summary>
         /// <code>
@@ -19,9 +20,11 @@ namespace LiveSplit.GW2SAB
         /// p4         p3
         /// </code>
         /// </summary>
-        public Area2D(Coordinates2 p1, Coordinates2 p2, Coordinates2 p3, Coordinates2 p4)
+        public Area2D(Coordinates2 p1, Coordinates2 p2, Coordinates2 p3, Coordinates2 p4,
+            AreaType areaType = AreaType.Checkpoint)
         {
             Polygon = new[] {p1, p2, p3, p4};
+            AreaType = areaType;
         }
 
         // https://stackoverflow.com/a/14998816/3210008
