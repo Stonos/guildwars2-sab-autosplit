@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using Gw2Sharp;
+using Gw2Sharp.Models;
 using LiveSplit.Model;
 using LiveSplit.Options;
 using LiveSplit.UI;
@@ -12,8 +14,11 @@ namespace LiveSplit.GW2SAB
 {
     public class Component : IComponent
     {
-        private readonly Gw2Sharp.Connection _connection;
-        private readonly Gw2Sharp.Gw2Client _client;
+        private readonly Gw2Client _client;
+        private TimerModel _timer;
+        private int _lastCheckpoint = -1;
+
+        private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
         public string ComponentName => "Guild Wars 2 Super Adventure Box auto splitter";
 
@@ -37,8 +42,8 @@ namespace LiveSplit.GW2SAB
 
         public Component()
         {
-            _connection = new Gw2Sharp.Connection();
-            _client = new Gw2Sharp.Gw2Client(_connection);
+            var connection = new Connection();
+            _client = new Gw2Client(connection);
         }
 
         public void Dispose()
@@ -70,8 +75,50 @@ namespace LiveSplit.GW2SAB
 
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
+            if (_timer == null)
+            {
+                InitTimer(state);
+            }
+
+            if (state.CurrentPhase == TimerPhase.NotRunning)
+            {
+                StartTimerIfNeeded();
+            }
+
             _client.Mumble.Update();
-            Log.Info(_client.Mumble.AvatarPosition.ToString());
+            var avatarPosition = AvatarPosition;
+            var avatarPosition2D = new Coordinates2(AvatarPosition.X, AvatarPosition.Z);
+            Log.Info($"\nnew Coordinates2({avatarPosition.X}, {avatarPosition.Z}),");
+
+            for (var i = _lastCheckpoint + 1; i < Checkpoints.W1Checkpoints.Count; i++)
+            {
+                var checkpoint = Checkpoints.W1Checkpoints[i];
+                var isOnCheckpoint = checkpoint.IsPointInArea(avatarPosition2D);
+                if (isOnCheckpoint)
+                {
+                    _lastCheckpoint = i;
+                    _timer.Split();
+                    break;
+                }
+            }
+        }
+
+        private void InitTimer(LiveSplitState state)
+        {
+            _timer = new TimerModel {CurrentState = state};
+            _client.Mumble.Update();
+        }
+
+        private void StartTimerIfNeeded()
+        {
+            var lastPosition = AvatarPosition;
+            _client.Mumble.Update();
+            var newPosition = AvatarPosition;
+
+            if (newPosition != lastPosition)
+            {
+                _timer.Start();
+            }
         }
     }
 }

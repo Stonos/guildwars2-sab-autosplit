@@ -88,6 +88,8 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Area2D.cs"/>
+        <Compile Include="Checkpoints.cs"/>
         <Compile Include="Component.cs"/>
         <Compile Include="Factory.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
