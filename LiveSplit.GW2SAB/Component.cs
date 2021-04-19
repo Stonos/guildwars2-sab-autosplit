@@ -121,7 +121,6 @@ namespace LiveSplit.GW2SAB
 
             var playingTransition = lastTick == _client.Mumble.Tick;
             var avatarPosition = AvatarPosition;
-            var avatarPosition2D = new Coordinates2(AvatarPosition.X, AvatarPosition.Z);
             Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
 
             for (var i = _lastCheckpoint + 1; i < mapCheckpoints.Count; i++)
@@ -147,12 +146,15 @@ namespace LiveSplit.GW2SAB
                 case AreaType.StartingArea:
                     if (wasPlayingTransition)
                     {
+                        Log.Info(
+                            $"Resetting timer because {checkpoint.Name} is a starting area and a transition was playing.");
                         _timer.Reset();
                     }
 
                     break;
 
                 case AreaType.Checkpoint:
+                    Log.Info($"Splitting because player is on {checkpoint.Name}");
                     _lastCheckpoint = checkpointIndex;
                     _timer.Split();
                     break;
@@ -160,6 +162,7 @@ namespace LiveSplit.GW2SAB
                 case AreaType.Boss:
                     if (playingTransition)
                     {
+                        Log.Info($"Splitting because player is on boss {checkpoint.Name} and a transition happened");
                         var currentSplit = state.CurrentSplit;
                         _timer.Split();
                         currentSplit.SplitTime =
