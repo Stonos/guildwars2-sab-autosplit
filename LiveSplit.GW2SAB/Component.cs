@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -49,6 +50,7 @@ namespace LiveSplit.GW2SAB
 
         public Component()
         {
+            Application.CurrentCulture = CultureInfo.CreateSpecificCulture("en-US");
             var connection = new Connection();
             _client = new Gw2Client(connection);
             LoadCheckpoints();
@@ -120,12 +122,12 @@ namespace LiveSplit.GW2SAB
             var playingTransition = lastTick == _client.Mumble.Tick;
             var avatarPosition = AvatarPosition;
             var avatarPosition2D = new Coordinates2(AvatarPosition.X, AvatarPosition.Z);
-            Log.Info($"\nnew Coordinates2({avatarPosition.X}, {avatarPosition.Z}),");
+            Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
 
             for (var i = _lastCheckpoint + 1; i < mapCheckpoints.Count; i++)
             {
                 var checkpoint = mapCheckpoints[i];
-                var isOnArea = checkpoint.IsPointInArea(avatarPosition2D);
+                var isOnArea = checkpoint.IsPointInArea(avatarPosition);
 
                 if (!isOnArea) continue;
 
