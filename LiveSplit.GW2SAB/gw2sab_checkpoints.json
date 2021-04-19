@@ -61,7 +61,8 @@
 			[-842.870361328125, 461.533081054688],
 			[-855.393859863281, 473.586303710938]
 		],
-		"AreaType": "boss"
+		"AreaType": "boss",
+		"TimeSubtract": 31250
 	}, {
 		"Name": "W1Z2 starting area",
 		"Polygon": [
@@ -115,7 +116,8 @@
 			[-27.5372085571289, 511.023193359375],
 			[-47.1473121643066, 507.489196777344]
 		],
-		"AreaType": "boss"
+		"AreaType": "boss",
+		"TimeSubtract": 31250
 	}, {
 		"Name": "W1Z3 starting area",
 		"Polygon": [
@@ -169,7 +171,8 @@
 			[-251.478469848633, 315.571594238281],
 			[-268.28759765625, 344.123107910156]
 		],
-		"AreaType": "boss"
+		"AreaType": "boss",
+		"TimeSubtract": 54250
 	}],
 	"934": [{
 		"Name": "W2Z1 starting area",
@@ -260,7 +263,8 @@
 			[-49.5416984558105, -275.450164794922],
 			[-54.4546890258789, -325.664337158203]
 		],
-		"AreaType": "boss"
+		"AreaType": "boss",
+		"TimeSubtract": 31250
 	}, {
 		"Name": "W2Z2 starting area",
 		"Polygon": [
@@ -396,7 +400,8 @@
 			[357.355316162109, 225.304809570313],
 			[324.708404541016, 224.036117553711]
 		],
-		"AreaType": "boss"
+		"AreaType": "boss",
+		"TimeSubtract": 31250
 	}, {
 		"Name": "W2Z3 starting area",
 		"Polygon": [
@@ -513,6 +518,7 @@
 			[-423.003784179688, -111.8370933532715],
 			[-303.003784179688, -111.8370933532715]
 		],
-		"AreaType": "boss"
+		"AreaType": "boss",
+		"TimeSubtract": 53250
 	}]
 }

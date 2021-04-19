@@ -11,6 +11,7 @@ namespace LiveSplit.GW2SAB
         public Coordinates2[] Polygon { get; set; }
         public AreaType AreaType { get; set; }
         public double MinimumHeight { get; set; }
+        public int TimeSubtract { get; set; }
 
         /// <summary>
         /// <code>
@@ -23,12 +24,13 @@ namespace LiveSplit.GW2SAB
         /// </code>
         /// </summary>
         public Area2D(string name, Coordinates2 p1, Coordinates2 p2, Coordinates2 p3, Coordinates2 p4,
-            AreaType areaType = AreaType.Checkpoint, double minimumHeight = 0)
+            AreaType areaType = AreaType.Checkpoint, double minimumHeight = 0, int timeSubtract = 0)
         {
             Name = name;
             Polygon = new[] {p1, p2, p3, p4};
             AreaType = areaType;
             MinimumHeight = minimumHeight;
+            TimeSubtract = timeSubtract;
         }
 
         // https://stackoverflow.com/a/14998816/3210008

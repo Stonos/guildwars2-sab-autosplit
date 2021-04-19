@@ -18,8 +18,6 @@ namespace LiveSplit.GW2SAB
 {
     public class Component : IComponent
     {
-        private const int BossKillOffsetMs = 31250;
-
         private readonly Gw2Client _client;
         private TimerModel _timer;
         private int _lastCheckpoint = -1;
@@ -167,7 +165,7 @@ namespace LiveSplit.GW2SAB
                         _timer.Split();
                         currentSplit.SplitTime =
                             new Time(currentSplit.SplitTime.RealTime?.Subtract(
-                                TimeSpan.FromMilliseconds(BossKillOffsetMs)));
+                                TimeSpan.FromMilliseconds(checkpoint.TimeSubtract)));
                     }
 
                     break;
