@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows.Forms;
 using System.Xml;
 using Gw2Sharp;
@@ -20,6 +23,7 @@ namespace LiveSplit.GW2SAB
         private TimerModel _timer;
         private int _lastCheckpoint = -1;
         private bool wasPlayingTransition;
+        private IDictionary<int, IList<Area2D>> _checkpoints;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
@@ -47,6 +51,22 @@ namespace LiveSplit.GW2SAB
         {
             var connection = new Connection();
             _client = new Gw2Client(connection);
+            LoadCheckpoints();
+        }
+
+        private void LoadCheckpoints()
+        {
+            var options = new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+                }
+            };
+
+            //TODO: Load the checkpoints async
+            var jsonString = File.ReadAllText("gw2sab_checkpoints.json");
+            _checkpoints = JsonSerializer.Deserialize<Dictionary<int, IList<Area2D>>>(jsonString, options);
         }
 
         public void Dispose()
@@ -90,14 +110,21 @@ namespace LiveSplit.GW2SAB
 
             var lastTick = _client.Mumble.Tick;
             _client.Mumble.Update();
+
+            var mapCheckpoints = _checkpoints.GetValueOrDefault(_client.Mumble.MapId, null);
+            if (mapCheckpoints == null)
+            {
+                return;
+            }
+
             var playingTransition = lastTick == _client.Mumble.Tick;
             var avatarPosition = AvatarPosition;
             var avatarPosition2D = new Coordinates2(AvatarPosition.X, AvatarPosition.Z);
             Log.Info($"\nnew Coordinates2({avatarPosition.X}, {avatarPosition.Z}),");
 
-            for (var i = _lastCheckpoint + 1; i < Checkpoints.W1Checkpoints.Count; i++)
+            for (var i = _lastCheckpoint + 1; i < mapCheckpoints.Count; i++)
             {
-                var checkpoint = Checkpoints.W1Checkpoints[i];
+                var checkpoint = mapCheckpoints[i];
                 var isOnArea = checkpoint.IsPointInArea(avatarPosition2D);
 
                 if (!isOnArea) continue;

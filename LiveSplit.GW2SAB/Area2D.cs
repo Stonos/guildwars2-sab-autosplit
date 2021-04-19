@@ -5,10 +5,11 @@ namespace LiveSplit.GW2SAB
     /// <summary>
     /// Represents an area in 2D space
     /// </summary>
-    public readonly struct Area2D
+    public struct Area2D
     {
-        public Coordinates2[] Polygon { get; }
-        public AreaType AreaType { get; }
+        public string Name { get; set; }
+        public Coordinates2[] Polygon { get; set; }
+        public AreaType AreaType { get; set; }
 
         /// <summary>
         /// <code>
@@ -20,9 +21,10 @@ namespace LiveSplit.GW2SAB
         /// p4         p3
         /// </code>
         /// </summary>
-        public Area2D(Coordinates2 p1, Coordinates2 p2, Coordinates2 p3, Coordinates2 p4,
+        public Area2D(string name, Coordinates2 p1, Coordinates2 p2, Coordinates2 p3, Coordinates2 p4,
             AreaType areaType = AreaType.Checkpoint)
         {
+            Name = name;
             Polygon = new[] {p1, p2, p3, p4};
             AreaType = areaType;
         }

@@ -90,16 +90,20 @@
     <ItemGroup>
         <Compile Include="Area2D.cs"/>
         <Compile Include="AreaType.cs"/>
-        <Compile Include="Checkpoints.cs"/>
         <Compile Include="Component.cs"/>
         <Compile Include="Factory.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="Utils.cs"/>
     </ItemGroup>
     <ItemGroup>
         <None Include="packages.config"/>
     </ItemGroup>
+    <ItemGroup>
+        <Content Include="gw2sab_checkpoints.json"/>
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <PropertyGroup>
         <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).*" "$(SolutionDir)\..\Components\"</PostBuildEvent>
+        <PostBuildEvent>copy /Y "$(ProjectDir)gw2sab_checkpoints.json" "$(SolutionDir)\..\"</PostBuildEvent>
     </PropertyGroup>
 </Project>
