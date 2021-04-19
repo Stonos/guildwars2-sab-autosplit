@@ -103,7 +103,9 @@
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <PropertyGroup>
-        <PostBuildEvent>copy /Y "$(TargetDir)$(TargetName).*" "$(SolutionDir)\..\Components\"</PostBuildEvent>
-        <PostBuildEvent>copy /Y "$(ProjectDir)gw2sab_checkpoints.json" "$(SolutionDir)\..\"</PostBuildEvent>
+        <PostBuildEvent>
+            copy /Y "$(TargetDir)$(TargetName).*" "$(SolutionDir)\..\Components\"
+            copy /Y "$(ProjectDir)gw2sab_checkpoints.json" "$(SolutionDir)\..\"
+        </PostBuildEvent>
     </PropertyGroup>
 </Project>
