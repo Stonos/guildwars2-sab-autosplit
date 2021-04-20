@@ -154,7 +154,7 @@ namespace LiveSplit.GW2SAB
             switch (checkpoint.AreaType)
             {
                 case AreaType.StartingArea:
-                    if (wasPlayingTransition)
+                    if (wasPlayingTransition && !playingTransition)
                     {
                         Log.Info(
                             $"Resetting timer because {checkpoint.Name} is a starting area and a transition was playing.");
@@ -202,7 +202,7 @@ namespace LiveSplit.GW2SAB
             _client.Mumble.Update();
             var newPosition = AvatarPosition;
 
-            if (newPosition != lastPosition)
+            if (newPosition.X != lastPosition.X || newPosition.Z != lastPosition.Z)
             {
                 _timer.Start();
             }
