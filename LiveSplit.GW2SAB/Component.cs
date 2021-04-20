@@ -67,7 +67,7 @@ namespace LiveSplit.GW2SAB
             };
 
             //TODO: Load the checkpoints async
-            var jsonString = File.ReadAllText("gw2sab_checkpoints.json");
+            var jsonString = File.ReadAllText("Components\\GW2SAB\\gw2sab_checkpoints.json");
             _checkpoints = JsonSerializer.Deserialize<Dictionary<int, IList<Area2D>>>(jsonString, options);
         }
 

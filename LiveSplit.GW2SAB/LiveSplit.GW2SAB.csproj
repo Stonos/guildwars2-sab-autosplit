@@ -105,7 +105,7 @@
     <PropertyGroup>
         <PostBuildEvent>
             copy /Y "$(TargetDir)$(TargetName).*" "$(SolutionDir)\..\Components\"
-            copy /Y "$(ProjectDir)gw2sab_checkpoints.json" "$(SolutionDir)\..\"
+            copy /Y "$(ProjectDir)gw2sab_checkpoints.json" "$(SolutionDir)\..\Components\GW2SAB\"
         </PostBuildEvent>
     </PropertyGroup>
 </Project>
