@@ -193,7 +193,7 @@ namespace LiveSplit.GW2SAB
 
         private void state_onReset(object sender, TimerPhase timerPhase)
         {
-            _lastCheckpoint = 0;
+            _lastCheckpoint = -1;
         }
 
         private void StartTimerIfNeeded()
@@ -204,6 +204,7 @@ namespace LiveSplit.GW2SAB
 
             if (newPosition.X != lastPosition.X || newPosition.Z != lastPosition.Z)
             {
+                _lastCheckpoint = -1;
                 _timer.Start();
             }
         }
