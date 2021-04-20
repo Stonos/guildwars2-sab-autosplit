@@ -18,11 +18,13 @@ namespace LiveSplit.GW2SAB
 {
     public class Component : IComponent
     {
+        private const int MaxSkippedTicks = 5;
         private readonly Gw2Client _client;
         private TimerModel _timer;
         private int _lastCheckpoint = -1;
         private bool wasPlayingTransition;
         private IDictionary<int, IList<Area2D>> _checkpoints;
+        private int noTickUpdateCount;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
@@ -106,6 +108,7 @@ namespace LiveSplit.GW2SAB
             if (state.CurrentPhase == TimerPhase.NotRunning)
             {
                 StartTimerIfNeeded();
+                return;
             }
 
             var lastTick = _client.Mumble.Tick;
@@ -117,9 +120,18 @@ namespace LiveSplit.GW2SAB
                 return;
             }
 
-            var playingTransition = lastTick == _client.Mumble.Tick;
+            if (lastTick == _client.Mumble.Tick)
+            {
+                noTickUpdateCount++;
+            }
+            else
+            {
+                noTickUpdateCount = 0;
+            }
+
+            var playingTransition = noTickUpdateCount > MaxSkippedTicks;
             var avatarPosition = AvatarPosition;
-            Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
+            // Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
 
             for (var i = _lastCheckpoint + 1; i < mapCheckpoints.Count; i++)
             {
