@@ -2,8 +2,6 @@
 {
     public enum AreaType
     {
-        Checkpoint,
-        Boss,
-        StartingArea
+        Polygon,
     }
 }

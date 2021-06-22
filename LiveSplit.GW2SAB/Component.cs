@@ -23,7 +23,7 @@ namespace LiveSplit.GW2SAB
         private TimerModel _timer;
         private int _lastCheckpoint = -1;
         private bool wasPlayingTransition;
-        private IDictionary<int, IList<Area2D>> _checkpoints;
+        private IDictionary<int, IList<Checkpoint>> _checkpoints;
         private int noTickUpdateCount;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
@@ -68,7 +68,7 @@ namespace LiveSplit.GW2SAB
 
             //TODO: Load the checkpoints async
             var jsonString = File.ReadAllText("Components\\GW2SAB\\gw2sab_checkpoints.json");
-            _checkpoints = JsonSerializer.Deserialize<Dictionary<int, IList<Area2D>>>(jsonString, options);
+            _checkpoints = JsonSerializer.Deserialize<Dictionary<int, IList<Checkpoint>>>(jsonString, options);
         }
 
         public void Dispose()
@@ -148,12 +148,12 @@ namespace LiveSplit.GW2SAB
             wasPlayingTransition = playingTransition;
         }
 
-        private void handleStandingOnArea(Area2D checkpoint, int checkpointIndex, LiveSplitState state,
+        private void handleStandingOnArea(Checkpoint checkpoint, int checkpointIndex, LiveSplitState state,
             bool playingTransition)
         {
-            switch (checkpoint.AreaType)
+            switch (checkpoint.CheckpointType)
             {
-                case AreaType.StartingArea:
+                case CheckpointType.StartingArea:
                     if (wasPlayingTransition && !playingTransition)
                     {
                         Log.Info(
@@ -163,13 +163,13 @@ namespace LiveSplit.GW2SAB
 
                     break;
 
-                case AreaType.Checkpoint:
+                case CheckpointType.Checkpoint:
                     Log.Info($"Splitting because player is on {checkpoint.Name}");
                     _lastCheckpoint = checkpointIndex;
                     _timer.Split();
                     break;
 
-                case AreaType.Boss:
+                case CheckpointType.Boss:
                     if (playingTransition)
                     {
                         Log.Info($"Splitting because player is on boss {checkpoint.Name} and a transition happened");
