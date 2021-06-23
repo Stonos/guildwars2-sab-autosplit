@@ -3,5 +3,6 @@
     public enum AreaType
     {
         Polygon,
+        Circle,
     }
 }
