@@ -137,7 +137,7 @@ namespace LiveSplit.GW2SAB
             for (var i = _lastCheckpoint + 1; i < mapCheckpoints.Count; i++)
             {
                 var checkpoint = mapCheckpoints[i];
-                var isOnArea = checkpoint.IsPointInArea(avatarPosition);
+                var isOnArea = checkpoint.IsPointInArea(avatarPosition, _client.Mumble.IsInCombat);
 
                 if (!isOnArea) continue;
 
