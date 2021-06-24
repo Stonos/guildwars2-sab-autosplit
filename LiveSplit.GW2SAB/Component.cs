@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Gw2Sharp;
 using Gw2Sharp.Models;
+using LiveSplit.GW2SAB.checkpoint;
 using LiveSplit.Model;
 using LiveSplit.Options;
 using LiveSplit.UI;

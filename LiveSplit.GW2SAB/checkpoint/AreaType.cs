@@ -1,4 +1,4 @@
-﻿namespace LiveSplit.GW2SAB
+﻿namespace LiveSplit.GW2SAB.checkpoint
 {
     public enum AreaType
     {

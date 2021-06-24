@@ -1,6 +1,6 @@
 ﻿using Gw2Sharp.Models;
 
-namespace LiveSplit.GW2SAB
+namespace LiveSplit.GW2SAB.checkpoint
 {
     /// <summary>
     /// Represents a checkpoint

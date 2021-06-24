@@ -1,7 +1,7 @@
 ﻿using System;
 using Gw2Sharp.Models;
 
-namespace LiveSplit.GW2SAB
+namespace LiveSplit.GW2SAB.checkpoint
 {
     public struct Area
     {
