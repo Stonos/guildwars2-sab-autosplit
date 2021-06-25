@@ -26,6 +26,7 @@ namespace LiveSplit.GW2SAB
         private bool wasPlayingTransition;
         private IDictionary<int, IList<Checkpoint>> _checkpoints;
         private int noTickUpdateCount;
+        private int _lastMapId;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
@@ -115,7 +116,14 @@ namespace LiveSplit.GW2SAB
             var lastTick = _client.Mumble.Tick;
             _client.Mumble.Update();
 
-            var mapCheckpoints = _checkpoints.GetValueOrDefault(_client.Mumble.MapId, null);
+            if (_lastMapId != _client.Mumble.MapId)
+            {
+                _lastCheckpoint = -1;
+            }
+
+            _lastMapId = _client.Mumble.MapId;
+
+            var mapCheckpoints = _checkpoints.GetValueOrDefault(_lastMapId, null);
             if (mapCheckpoints == null)
             {
                 return;
@@ -132,7 +140,7 @@ namespace LiveSplit.GW2SAB
 
             var playingTransition = noTickUpdateCount > MaxSkippedTicks;
             var avatarPosition = AvatarPosition;
-            // Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
+            Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
 
             for (var i = _lastCheckpoint + 1; i < mapCheckpoints.Count; i++)
             {
