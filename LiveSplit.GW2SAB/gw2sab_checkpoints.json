@@ -695,5 +695,414 @@
       "CheckpointType": "boss",
       "TimeSubtract": 53250
     }
+  ],
+  "1062": [
+    {
+      "Name": "Vale Guardian",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-121.31709289550781, -523.98388671875],
+        "Radius": 38
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "Spirit Run",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-126.24543762207031, -456.1111145019531],
+        "Radius": 16
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Gorseval",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-56.1238146, -111.98641559999999],
+        "Radius": 20
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "Sabetha Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [35.9445814, -7.700391],
+        "Radius": 10
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Sabetha",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-125.9622322, 85.7953072],
+        "Radius": 40
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }
+  ],
+  "1149": [
+    {
+      "Name": "Sloth transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [257.359375, 254.74200439453125],
+        "Radius": 10
+      },
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "Sloth",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [196.2599639892578, -17.185575485229492],
+        "Radius": 60
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "Trio Transition",
+      "Area": {
+        "AreaType": "polygon",
+        "Polygon": [
+          [142.819290161133, -67.2883605957031],
+          [153.702575683594, -65.8943252563477],
+          [145.090072631836, -80.3025665283203],
+          [157.279815673828, -74.6752090454102]
+        ]
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Trio",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-15.7187646, -251.57287759999997],
+        "Radius": 60
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Matthias Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-29.758106599999998, -106.94187400000001],
+        "Radius": 40
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Matthias",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-149.6601528, 127.76741019999999],
+        "Radius": 25
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }
+  ],
+  "1156": [
+    {
+      "Name": "Escort Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [232.16049194335938, 568.61572265625],
+        "Radius": 10
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Escort",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [175.6708704, 440.3217762],
+        "Radius": 10.2
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Keep Construct Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-99.0503226, 371.1260548],
+        "Radius": 10
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Keep Construct",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-98.1178886, 236.16414539999997],
+        "Radius": 25
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Twisted Castle",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-99.308285, 180.6588716],
+        "Radius": 15
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Xera",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-50.660376199999995, -32.859141799999996],
+        "Radius": 15,
+        "MinimumHeight": 450.0
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }
+  ],
+  "1188": [
+    {
+      "Name": "Cairn Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [471.1321716308594, -156.13841247558594],
+        "Radius": 10
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Cairn",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [364.659912109375, 51.34345245361328],
+        "Radius": 35
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Mursat Overseer Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [229.46243159999997, 77.75239719999999],
+        "Radius": 20
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Mursat Overseer",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [65.937384, 102.1583428],
+        "Radius": 30
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Samarog Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [15.1764492, 95.2471552],
+        "Radius": 10
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Samarog",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-94.848807, 74.8247932],
+        "Radius": 30
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Deimos Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-131.0679116, 146.24072859999998],
+        "Radius": 6
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Deimos",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-213.50028419999998, 78.5451058],
+        "Radius": 30
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }
+  ],
+  "1264": [
+    {
+      "Name": "Soulless Horror Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-480.3118664, -1.1881358],
+        "Radius": 15
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Soulless Horror",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-270.570452, 21.2488526],
+        "Radius": 25
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "River of Souls",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-203.925932, 20.4399642],
+        "Radius": 15
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Statues",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [207.6506388, 26.173582399999997],
+        "Radius": 20
+      },
+      "CombatStatus": "OutOfCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Dhuum",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [401.0956672, 18.2259224],
+        "Radius": 30,
+        "MinimumHeight": 140.0
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }
+  ],
+  "1303": [
+    {
+      "Name": "Conjured Amalgamate Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-303.030517578125, -391.6504211425781],
+        "Radius": 20
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Conjured Amalgamate",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-95.97359519999999, -333.0466796],
+        "Radius": 20
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Twin Largos Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-55.56996759999999, -258.0187118],
+        "Radius": 10
+      },
+      "CombatStatus": "OutOfCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Twin Largos",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [367.172621, -82.4131194],
+        "Radius": 10
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Qadim Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [370.80639579999996, 179.3459964],
+        "Radius": 15
+      },
+      "CombatStatus": "OutOfCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Qadim",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-190.0184668, 305.1096514],
+        "Radius": 40
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }
+  ],
+  "7": [
+    {
+      "Name": "Gate",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-5.4640734, -438.91453999999993],
+        "Radius": 20
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Adina Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [41.0693362, -195.6637692],
+        "Radius": 10
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Adina",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [381.5593334, -36.170743],
+        "Radius": 25
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Sabir Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-14.102765799999998, -52.338427200000005],
+        "Radius": 25
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Sabir",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-294.3194774, 97.7851994],
+        "Radius": 15,
+        "MinimumHeight": 50.0
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Qadim 2 Transition",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [41.9638988, -13.3871462],
+        "Radius": 15
+      },
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Qadim 2",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [34.845752000000005, 258.9632108],
+        "Radius": 40
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Qadim 2 OOC",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [34.845752000000005, 258.9632108],
+        "Radius": 6
+      },
+      "CombatStatus": "OutOfCombat",
+      "CheckpointType": "checkpoint"
+    }
   ]
 }
