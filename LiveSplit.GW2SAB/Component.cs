@@ -22,11 +22,10 @@ namespace LiveSplit.GW2SAB
         private const int MaxSkippedTicks = 5;
         private readonly Gw2Client _client;
         private TimerModel _timer;
-        private int _lastCheckpoint = -1;
+        private IDictionary<int, int> _lastCheckpoint = new Dictionary<int, int>();
         private bool wasPlayingTransition;
         private IDictionary<int, IList<Checkpoint>> _checkpoints;
         private int noTickUpdateCount;
-        private int _lastMapId;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
@@ -116,14 +115,8 @@ namespace LiveSplit.GW2SAB
             var lastTick = _client.Mumble.Tick;
             _client.Mumble.Update();
 
-            if (_lastMapId != _client.Mumble.MapId)
-            {
-                _lastCheckpoint = -1;
-            }
-
-            _lastMapId = _client.Mumble.MapId;
-
-            var mapCheckpoints = _checkpoints.GetValueOrDefault(_lastMapId, null);
+            var mapId = _client.Mumble.MapId;
+            var mapCheckpoints = _checkpoints.GetValueOrDefault(mapId, null);
             if (mapCheckpoints == null)
             {
                 return;
@@ -142,14 +135,14 @@ namespace LiveSplit.GW2SAB
             var avatarPosition = AvatarPosition;
             Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
 
-            for (var i = _lastCheckpoint + 1; i < mapCheckpoints.Count; i++)
+            for (var i = _lastCheckpoint.GetValueOrDefault(mapId, -1) + 1; i < mapCheckpoints.Count; i++)
             {
                 var checkpoint = mapCheckpoints[i];
                 var isOnArea = checkpoint.IsPointInArea(avatarPosition, _client.Mumble.IsInCombat);
 
                 if (!isOnArea) continue;
 
-                handleStandingOnArea(checkpoint, i, state, playingTransition);
+                handleStandingOnArea(checkpoint, i, state, playingTransition, mapId);
 
                 break;
             }
@@ -158,7 +151,7 @@ namespace LiveSplit.GW2SAB
         }
 
         private void handleStandingOnArea(Checkpoint checkpoint, int checkpointIndex, LiveSplitState state,
-            bool playingTransition)
+            bool playingTransition, int mapId)
         {
             switch (checkpoint.CheckpointType)
             {
@@ -174,7 +167,7 @@ namespace LiveSplit.GW2SAB
 
                 case CheckpointType.Checkpoint:
                     Log.Info($"Splitting because player is on {checkpoint.Name}");
-                    _lastCheckpoint = checkpointIndex;
+                    _lastCheckpoint[mapId] = checkpointIndex;
                     _timer.Split();
                     break;
 
@@ -202,7 +195,7 @@ namespace LiveSplit.GW2SAB
 
         private void state_onReset(object sender, TimerPhase timerPhase)
         {
-            _lastCheckpoint = -1;
+            _lastCheckpoint.Clear();
         }
 
         private void StartTimerIfNeeded()
@@ -213,7 +206,7 @@ namespace LiveSplit.GW2SAB
 
             if (newPosition.X != lastPosition.X || newPosition.Z != lastPosition.Z)
             {
-                _lastCheckpoint = -1;
+                _lastCheckpoint.Clear();
                 _timer.Start();
             }
         }
