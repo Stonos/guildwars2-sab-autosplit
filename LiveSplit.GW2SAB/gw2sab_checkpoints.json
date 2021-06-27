@@ -719,7 +719,7 @@
       "Name": "Gorseval",
       "Area": {
         "AreaType": "circle",
-        "Center": [-56.1238146, -111.98641559999999],
+        "Center": [36.1692698, -112.686338],
         "Radius": 20
       },
       "CombatStatus": "InCombat",
