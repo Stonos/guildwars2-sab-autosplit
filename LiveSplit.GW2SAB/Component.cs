@@ -14,9 +14,25 @@ using LiveSplit.Model;
 using LiveSplit.Options;
 using LiveSplit.UI;
 using LiveSplit.UI.Components;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace LiveSplit.GW2SAB
 {
+    public class User32
+    {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Rect
+        {
+            public int left;
+            public int top;
+            public int right;
+            public int bottom;
+        }
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref Rect rect);
+    }
     public class Component : IComponent
     {
         private const int MaxSkippedTicks = 5;
@@ -24,6 +40,8 @@ namespace LiveSplit.GW2SAB
         private TimerModel _timer;
         private IDictionary<int, int> _lastCheckpoint = new Dictionary<int, int>();
         private bool wasPlayingTransition;
+        private bool skipLoadingScreen;
+        private bool _inloadingScreen;
         private IDictionary<int, IList<Checkpoint>> _checkpoints;
         private int noTickUpdateCount;
 
@@ -66,6 +84,10 @@ namespace LiveSplit.GW2SAB
                     new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
                 }
             };
+            //TODO: Make this a real Setting
+            //var jsonConfig = File.ReadAllText("Components\\GW2SAB\\gw2sab_config.json");
+            //var config = JsonSerializer.Deserialize<Dictionary<String, bool>>(jsonConfig, options);
+            skipLoadingScreen = true;
 
             //TODO: Load the checkpoints async
             var jsonString = File.ReadAllText("Components\\GW2SAB\\gw2sab_checkpoints.json");
@@ -99,6 +121,38 @@ namespace LiveSplit.GW2SAB
         {
         }
 
+        public Bitmap TakeScreenShot(double bottom_perc)
+        {
+            Process proc = Process.GetProcessById(((int)_client.Mumble.ProcessId));
+            var rect = new User32.Rect();
+            User32.GetWindowRect(proc.MainWindowHandle, ref rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+            Bitmap bmp = new Bitmap(width, (int)(height * bottom_perc));    // smaller bitmap
+
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                g.CopyFromScreen(rect.left, (int)(rect.top + (1- bottom_perc) * height), 0, 0, bmp.Size); // start lower
+            }
+            return bmp;
+        }
+        public static bool IsMostlyBlack(Bitmap a)
+        {
+            int counter = 0;
+            for (int x = 0; x < a.Width; x++)
+            {
+                for (int y = 0; y < a.Height; y++)
+                {
+                    Color c = a.GetPixel(x, y);
+                    if (c.R == 0 && c.G == 0 && c.B == 0)
+                    {
+                        counter += 1;
+                    }
+                }
+            }
+            var i = (counter / (double)(a.Width * a.Height));
+            return i >= 0.60;
+        }
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
             if (_timer == null)
@@ -117,7 +171,7 @@ namespace LiveSplit.GW2SAB
 
             var mapId = _client.Mumble.MapId;
             var mapCheckpoints = _checkpoints.GetValueOrDefault(mapId, null);
-            if (mapCheckpoints == null)
+            if (!skipLoadingScreen && mapCheckpoints == null)
             {
                 return;
             }
@@ -134,6 +188,34 @@ namespace LiveSplit.GW2SAB
             var playingTransition = noTickUpdateCount > MaxSkippedTicks;
             var avatarPosition = AvatarPosition;
             Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
+
+            if (skipLoadingScreen)
+            {
+                // Pause for loading-screen
+                if (playingTransition // must be transitioning
+                    && !_inloadingScreen // only trigger once (also avoids skipping in charater creation)
+                    //&& !wasPlayingTransition // only trigger once (take this to skip char creation)
+                    && IsMostlyBlack(TakeScreenShot(0.1))) // check for black bar
+                {
+                    _timer.Pause();
+                    Log.Info($"Pausing during a loading screen");
+                    //wasPlayingTransition = playingTransition;   // update to avoid recheck
+                    _inloadingScreen = true;
+                }
+                // Loading Screen Unpause
+                if (!playingTransition && _inloadingScreen)
+                {
+                    _timer.Pause();
+                    Log.Info($"Unpausing after a loading screen");
+                    _inloadingScreen = false;
+                }
+            }
+
+            // Redo Check to skip empty maps
+            if (skipLoadingScreen && mapCheckpoints == null)
+            {
+                return;
+            }
 
             for (var i = _lastCheckpoint.GetValueOrDefault(mapId, -1) + 1; i < mapCheckpoints.Count; i++)
             {
