@@ -99,6 +99,7 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="gw2sab_config.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +110,7 @@
     <PostBuildEvent>
             copy /Y "$(TargetDir)$(TargetName).*" "$(SolutionDir)\..\Components\"
             copy /Y "$(ProjectDir)gw2sab_checkpoints.json" "$(SolutionDir)\..\Components\GW2SAB\"
+            copy /Y "$(ProjectDir)gw2sab_config.json" "$(SolutionDir)\..\Components\GW2SAB\"
         </PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -40,8 +40,8 @@ namespace LiveSplit.GW2SAB
         private TimerModel _timer;
         private IDictionary<int, int> _lastCheckpoint = new Dictionary<int, int>();
         private bool wasPlayingTransition;
-        private bool skipLoadingScreen;
-        private bool _inloadingScreen;
+        private bool _skipLoadingScreen;
+        private bool inLoadingScreen;
         private IDictionary<int, IList<Checkpoint>> _checkpoints;
         private int noTickUpdateCount;
 
@@ -73,6 +73,15 @@ namespace LiveSplit.GW2SAB
             var connection = new Connection();
             _client = new Gw2Client(connection);
             LoadCheckpoints();
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            //TODO: Make this a real Setting
+            var jsonConfig = File.ReadAllText("Components\\GW2SAB\\gw2sab_config.json");
+            var config = JsonSerializer.Deserialize<Dictionary<String, bool>>(jsonConfig);
+            _skipLoadingScreen = config.GetValueOrDefault("PauseLoadingScreen", false);
         }
 
         private void LoadCheckpoints()
@@ -84,10 +93,6 @@ namespace LiveSplit.GW2SAB
                     new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
                 }
             };
-            //TODO: Make this a real Setting
-            //var jsonConfig = File.ReadAllText("Components\\GW2SAB\\gw2sab_config.json");
-            //var config = JsonSerializer.Deserialize<Dictionary<String, bool>>(jsonConfig, options);
-            skipLoadingScreen = true;
 
             //TODO: Load the checkpoints async
             var jsonString = File.ReadAllText("Components\\GW2SAB\\gw2sab_checkpoints.json");
@@ -171,7 +176,7 @@ namespace LiveSplit.GW2SAB
 
             var mapId = _client.Mumble.MapId;
             var mapCheckpoints = _checkpoints.GetValueOrDefault(mapId, null);
-            if (!skipLoadingScreen && mapCheckpoints == null)
+            if (!_skipLoadingScreen && mapCheckpoints == null)
             {
                 return;
             }
@@ -189,30 +194,30 @@ namespace LiveSplit.GW2SAB
             var avatarPosition = AvatarPosition;
             Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
 
-            if (skipLoadingScreen)
+            if (_skipLoadingScreen)
             {
                 // Pause for loading-screen
                 if (playingTransition // must be transitioning
-                    && !_inloadingScreen // only trigger once (also avoids skipping in charater creation)
+                    && !inLoadingScreen // only trigger once (also avoids skipping in charater creation)
                     //&& !wasPlayingTransition // only trigger once (take this to skip char creation)
                     && IsMostlyBlack(TakeScreenShot(0.1))) // check for black bar
                 {
                     _timer.Pause();
                     Log.Info($"Pausing during a loading screen");
                     //wasPlayingTransition = playingTransition;   // update to avoid recheck
-                    _inloadingScreen = true;
+                    inLoadingScreen = true;
                 }
                 // Loading Screen Unpause
-                if (!playingTransition && _inloadingScreen)
+                if (!playingTransition && inLoadingScreen)
                 {
                     _timer.Pause();
                     Log.Info($"Unpausing after a loading screen");
-                    _inloadingScreen = false;
+                    inLoadingScreen = false;
                 }
             }
 
             // Redo Check to skip empty maps
-            if (skipLoadingScreen && mapCheckpoints == null)
+            if (_skipLoadingScreen && mapCheckpoints == null)
             {
                 return;
             }

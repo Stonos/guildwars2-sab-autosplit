@@ -18,10 +18,20 @@ You can modify [gw2sab_checkpoints.json](https://github.com/Stonos/guildwars2-sa
 
 Make sure that the checkpoints are sorted, otherwise they may not trigger correctly!
 
+### Optional Features
+Some features can be configured in [gw2sab_config.json](https://github.com/Atlan-G/guildwars2-sab-autosplit/blob/master/LiveSplit.GW2SAB/gw2sab_checkpoints.json)
+- ``PauseLoadingScreen`` if set to ``true`` will pause the timer when detecting a loading-screen and subsequently resume.
+
 ## How it works
-It works by reading the player's position using the [MumbleLink API](https://wiki.guildwars2.com/wiki/API:MumbleLink), and comparing it to a [list of known checkpoint locations](https://github.com/Stonos/guildwars2-sab-autosplit/blob/master/LiveSplit.GW2SAB/gw2sab_checkpoints.json).
+It works by reading the player's position using the [MumbleLink API](https://wiki.guildwars2.com/wiki/API:MumbleLink), and comparing it to a [list of known checkpoint locations](https://github.com/Stonos/guildwars2-sab-autosplit/blob/master/LiveSplit.GW2SAB/gw2sab_checkpoints.json).  
+When detecting a loading-screen it also screenshots the game and counts the number of black pixels at the bottom.
 
 ## Limitations
 It's not possible to detect when a boss dies through the MumbleLink API.
 As a workaround, a set amount of time is subtracted after the level changes while you're in a boss area.
 This means that in order to see your final time, you must wait until you get teleported to the next level.
+
+## How to Develop (for .Net newbies)
+1. Download [LiveSplit](https://livesplit.org/downloads)
+2. Clone / Unzip this Repository inside the LiveSplit directory
+3. Open the Project in Visual Studio and fetch dependencies with NuGet
