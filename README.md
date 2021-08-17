@@ -20,7 +20,8 @@ Make sure that the checkpoints are sorted, otherwise they may not trigger correc
 
 ### Optional Features
 Some features can be configured in [gw2sab_config.json](https://github.com/Atlan-G/guildwars2-sab-autosplit/blob/master/LiveSplit.GW2SAB/gw2sab_checkpoints.json)
-- ``PauseLoadingScreen`` if set to ``true`` will pause the timer when detecting a loading-screen and subsequently resume.
+- ``LoadingScreens`` control how loading-screens are timed. Options are: ``include``/``exclude`` from timer or ``only``, which discards normal playtime. Default is ``include``.
+- ``StartCondition`` Allows the timer to start on ``moving`` (default), ``loading``-screens, anything ``notLoading``-screen (includes character select), ``notTransitioning`` (does not start on character select) or ``manual``.
 
 ## How it works
 It works by reading the player's position using the [MumbleLink API](https://wiki.guildwars2.com/wiki/API:MumbleLink), and comparing it to a [list of known checkpoint locations](https://github.com/Stonos/guildwars2-sab-autosplit/blob/master/LiveSplit.GW2SAB/gw2sab_checkpoints.json).  

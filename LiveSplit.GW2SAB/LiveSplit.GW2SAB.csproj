@@ -94,6 +94,7 @@
     <Compile Include="checkpoint\CheckpointType.cs" />
     <Compile Include="checkpoint\CombatStatus.cs" />
     <Compile Include="Component.cs" />
+    <Compile Include="ConfigTypes.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils.cs" />

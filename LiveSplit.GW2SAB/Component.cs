@@ -40,10 +40,11 @@ namespace LiveSplit.GW2SAB
         private TimerModel _timer;
         private IDictionary<int, int> _lastCheckpoint = new Dictionary<int, int>();
         private bool wasPlayingTransition;
-        private bool _skipLoadingScreen;
-        private bool inLoadingScreen;
         private IDictionary<int, IList<Checkpoint>> _checkpoints;
         private int noTickUpdateCount;
+        private bool _CachedScreenshotLoadingScreenResult;
+        private LoadingScreen _loadingScreen;
+        private StartCondition _startCondition;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
@@ -78,10 +79,22 @@ namespace LiveSplit.GW2SAB
 
         private void LoadSettings()
         {
-            //TODO: Make this a real Setting
+            var options = new JsonSerializerOptions
+            {
+                Converters =
+                {
+                    new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, true)
+                },
+                AllowTrailingCommas = true
+            };
+
+            //TODO: Make this real Settings
             var jsonConfig = File.ReadAllText("Components\\GW2SAB\\gw2sab_config.json");
-            var config = JsonSerializer.Deserialize<Dictionary<String, bool>>(jsonConfig);
-            _skipLoadingScreen = config.GetValueOrDefault("PauseLoadingScreen", false);
+            var raw_config = JsonSerializer.Deserialize<Dictionary<String, String>>(jsonConfig);
+            var raw_TransitionHandler = raw_config.GetValueOrDefault("LoadingScreens", "Include");
+            var raw_StartCondition = raw_config.GetValueOrDefault("StartCondition", "Moving");
+            if (!LoadingScreen.TryParse(raw_TransitionHandler, true, out _loadingScreen)) _loadingScreen = LoadingScreen.Include;
+            if (!StartCondition.TryParse(raw_StartCondition, true, out _startCondition)) _startCondition = StartCondition.Moving;
         }
 
         private void LoadCheckpoints()
@@ -158,6 +171,29 @@ namespace LiveSplit.GW2SAB
             var i = (counter / (double)(a.Width * a.Height));
             return i >= 0.60;
         }
+
+        public bool IsLoading()
+        {
+            if (!(noTickUpdateCount > MaxSkippedTicks)) // not transitioning, will invalidate cache
+            {
+                _CachedScreenshotLoadingScreenResult = false;
+                return false;
+            } else if (_CachedScreenshotLoadingScreenResult) return true; // transitioning and screenshot from cache aproved
+            else    // a transition is happening, but loading screen has to be confirmed by snapshot
+            {
+                _CachedScreenshotLoadingScreenResult = IsMostlyBlack(TakeScreenShot(0.1));
+                return _CachedScreenshotLoadingScreenResult;
+            }
+        }
+
+        public bool IsLoading(bool force_recheck)
+        {
+            // when starting the timer for the first time thic can be usefull
+            if (force_recheck) _CachedScreenshotLoadingScreenResult = IsMostlyBlack(TakeScreenShot(0.1));
+            return IsLoading();
+        }
+
+        public bool IsTransitioning() { return noTickUpdateCount > MaxSkippedTicks; }
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
             if (_timer == null)
@@ -165,21 +201,13 @@ namespace LiveSplit.GW2SAB
                 InitTimer(state);
             }
 
-            if (state.CurrentPhase == TimerPhase.NotRunning)
-            {
-                StartTimerIfNeeded();
-                return;
-            }
-
+            // accumulate ticks
+            var lastPosition = AvatarPosition;
             var lastTick = _client.Mumble.Tick;
             _client.Mumble.Update();
 
             var mapId = _client.Mumble.MapId;
             var mapCheckpoints = _checkpoints.GetValueOrDefault(mapId, null);
-            if (!_skipLoadingScreen && mapCheckpoints == null)
-            {
-                return;
-            }
 
             if (lastTick == _client.Mumble.Tick)
             {
@@ -190,34 +218,53 @@ namespace LiveSplit.GW2SAB
                 noTickUpdateCount = 0;
             }
 
+            if (state.CurrentPhase == TimerPhase.NotRunning)    // From here the timer has to be started
+            {
+                StartTimerIfNeeded(lastPosition);
+                return;
+            }
+
             var playingTransition = noTickUpdateCount > MaxSkippedTicks;
             var avatarPosition = AvatarPosition;
             Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
 
-            if (_skipLoadingScreen)
+
+            if (_loadingScreen != LoadingScreen.Include)
             {
-                // Pause for loading-screen
-                if (playingTransition // must be transitioning
-                    && !inLoadingScreen // only trigger once (also avoids skipping in charater creation)
-                    //&& !wasPlayingTransition // only trigger once (take this to skip char creation)
-                    && IsMostlyBlack(TakeScreenShot(0.1))) // check for black bar
+                // Loading-Screen Start
+                if (IsLoading())
                 {
-                    _timer.Pause();
-                    Log.Info($"Pausing during a loading screen");
-                    //wasPlayingTransition = playingTransition;   // update to avoid recheck
-                    inLoadingScreen = true;
+                    if (state.CurrentPhase == TimerPhase.Running && _loadingScreen == LoadingScreen.Exclude)
+                    {
+                        _timer.Pause();
+                        //MessageBox.Show("Paused", "Debug");
+                        Log.Info($"Pausing during a loading screen");
+                    }
+                    else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Only)
+                    {
+                        _timer.Pause();
+                        Log.Info($"Starting to time loading screen");
+                    }
                 }
-                // Loading Screen Unpause
-                if (!playingTransition && inLoadingScreen)
+                // Not Loading-Screen
+                else
                 {
-                    _timer.Pause();
-                    Log.Info($"Unpausing after a loading screen");
-                    inLoadingScreen = false;
+                    //MessageBox.Show("Not Loading: " + state.CurrentPhase.ToString(), "Debug");
+                    if (state.CurrentPhase == TimerPhase.Running && _loadingScreen == LoadingScreen.Only)
+                    {
+                        _timer.Pause();
+                        Log.Info($"Pausing after a loading screen");
+                    } else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Exclude)
+                    {
+                        //MessageBox.Show("Paused: " + _loadingScreen.ToString(), "Debug");
+                        _timer.Pause();
+                        Log.Info($"Starting after a loading screen");
+                    }
                 }
             }
 
             // Redo Check to skip empty maps
-            if (_skipLoadingScreen && mapCheckpoints == null)
+            if (mapCheckpoints == null)
             {
                 return;
             }
@@ -285,17 +332,54 @@ namespace LiveSplit.GW2SAB
             _lastCheckpoint.Clear();
         }
 
-        private void StartTimerIfNeeded()
+        private void StartTimerIfNeeded(Coordinates3 lastPosition)
         {
-            var lastPosition = AvatarPosition;
             _client.Mumble.Update();
             var newPosition = AvatarPosition;
 
-            if (newPosition.X != lastPosition.X || newPosition.Z != lastPosition.Z)
+            switch (_startCondition)
             {
-                _lastCheckpoint.Clear();
-                _timer.Start();
+                case StartCondition.Moving: // character moves
+                    if (newPosition.X != lastPosition.X || newPosition.Z != lastPosition.Z)
+                    {
+                        _lastCheckpoint.Clear();
+                        _timer.Start();
+                        if (_loadingScreen == LoadingScreen.Only) _timer.Pause(); // immeadiatly pause until loadingscreen starts
+                    }
+                    break;
+
+                case StartCondition.Loading:    // loading screen is visible
+                    if (IsLoading(true))
+                    {
+                        _lastCheckpoint.Clear();
+                        _timer.Start();
+                        if (_loadingScreen == LoadingScreen.Exclude) _timer.Pause(); // immeadiatly pause until loadingscreen ends
+                    }
+                    break;
+
+                case StartCondition.NotLoading: // anything where the black bar is not visible
+                    if (!IsLoading(true))
+                    {
+                        _lastCheckpoint.Clear();
+                        _timer.Start();
+                        if (_loadingScreen == LoadingScreen.Only) _timer.Pause(); // immeadiatly pause until next loadingscreen starts
+                    }
+                    break;
+
+                case StartCondition.NotTransitioning:   // no loadingscreen or character select
+                    if (!IsTransitioning())
+                    {
+                        _lastCheckpoint.Clear();
+                        _timer.Start();
+                        if (_loadingScreen == LoadingScreen.Only) _timer.Pause(); // immeadiatly pause until next loadingscreen starts
+                    }
+                    break;
             }
+        }
+        private void StartTimerIfNeeded()
+        {
+            var lastPosition = AvatarPosition;
+            StartTimerIfNeeded(lastPosition);
         }
     }
 }

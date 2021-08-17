@@ -1,3 +1,4 @@
 {
-    "PauseLoadingScreen": true
+    "LoadingScreens": "include",
+    "StartCondition": "moving"
 }
