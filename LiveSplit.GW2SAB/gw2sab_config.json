@@ -1,4 +1,5 @@
 {
     "LoadingScreens": "include",
-    "StartCondition": "moving"
+    "StartCondition": "moving",
+    "PauseOnExit": "true"
 }

@@ -45,6 +45,7 @@ namespace LiveSplit.GW2SAB
         private bool _CachedScreenshotLoadingScreenResult;
         private LoadingScreen _loadingScreen;
         private StartCondition _startCondition;
+        private bool _pauseOnExit;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
@@ -91,10 +92,12 @@ namespace LiveSplit.GW2SAB
             //TODO: Make this real Settings
             var jsonConfig = File.ReadAllText("Components\\GW2SAB\\gw2sab_config.json");
             var raw_config = JsonSerializer.Deserialize<Dictionary<String, String>>(jsonConfig);
-            var raw_TransitionHandler = raw_config.GetValueOrDefault("LoadingScreens", "Include");
+            var raw_LoadingScreen = raw_config.GetValueOrDefault("LoadingScreens", "Include");
             var raw_StartCondition = raw_config.GetValueOrDefault("StartCondition", "Moving");
-            if (!LoadingScreen.TryParse(raw_TransitionHandler, true, out _loadingScreen)) _loadingScreen = LoadingScreen.Include;
+            var raw_PauseOnExit = raw_config.GetValueOrDefault("PauseOnExit", "true");
+            if (!LoadingScreen.TryParse(raw_LoadingScreen, true, out _loadingScreen)) _loadingScreen = LoadingScreen.Include;
             if (!StartCondition.TryParse(raw_StartCondition, true, out _startCondition)) _startCondition = StartCondition.Moving;
+            if (!Boolean.TryParse(raw_PauseOnExit, out _pauseOnExit)) _pauseOnExit = true;
         }
 
         private void LoadCheckpoints()
@@ -104,7 +107,8 @@ namespace LiveSplit.GW2SAB
                 Converters =
                 {
                     new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
-                }
+                },
+                AllowTrailingCommas = true
             };
 
             //TODO: Load the checkpoints async
@@ -201,6 +205,19 @@ namespace LiveSplit.GW2SAB
                 InitTimer(state);
             }
 
+            // Check if the Game has closed, but only if it was running before.
+            // this check should save the overhead of a syscall when not transitioning
+            if (_pauseOnExit && IsTransitioning())
+            {
+                try { Process.GetProcessById((int)_client.Mumble.ProcessId); }
+                catch (ArgumentException)
+                {
+                    _client.Mumble.Update();
+                    if (state.CurrentPhase == TimerPhase.Running) _timer.Pause();
+                    return;
+                }
+            }
+
             // accumulate ticks
             var lastPosition = AvatarPosition;
             var lastTick = _client.Mumble.Tick;
@@ -237,7 +254,6 @@ namespace LiveSplit.GW2SAB
                     if (state.CurrentPhase == TimerPhase.Running && _loadingScreen == LoadingScreen.Exclude)
                     {
                         _timer.Pause();
-                        //MessageBox.Show("Paused", "Debug");
                         Log.Info($"Pausing during a loading screen");
                     }
                     else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Only)
@@ -249,14 +265,12 @@ namespace LiveSplit.GW2SAB
                 // Not Loading-Screen
                 else
                 {
-                    //MessageBox.Show("Not Loading: " + state.CurrentPhase.ToString(), "Debug");
                     if (state.CurrentPhase == TimerPhase.Running && _loadingScreen == LoadingScreen.Only)
                     {
                         _timer.Pause();
                         Log.Info($"Pausing after a loading screen");
                     } else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Exclude)
                     {
-                        //MessageBox.Show("Paused: " + _loadingScreen.ToString(), "Debug");
                         _timer.Pause();
                         Log.Info($"Starting after a loading screen");
                     }
