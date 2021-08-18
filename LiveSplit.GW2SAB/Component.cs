@@ -218,9 +218,13 @@ namespace LiveSplit.GW2SAB
                 }
             }
 
+            // need to remember transition state before update, since position will not be updated
+            if (state.CurrentPhase == TimerPhase.NotRunning)
+                wasPlayingTransition = noTickUpdateCount > MaxSkippedTicks;
+
             // accumulate ticks
-            var lastPosition = AvatarPosition;
             var lastTick = _client.Mumble.Tick;
+            var lastPosition = AvatarPosition;
             _client.Mumble.Update();
 
             var mapId = _client.Mumble.MapId;
@@ -237,7 +241,7 @@ namespace LiveSplit.GW2SAB
 
             if (state.CurrentPhase == TimerPhase.NotRunning)    // From here the timer has to be started
             {
-                StartTimerIfNeeded(lastPosition);
+                StartTimerIfNeeded(lastPosition, wasPlayingTransition);
                 return;
             }
 
@@ -346,15 +350,15 @@ namespace LiveSplit.GW2SAB
             _lastCheckpoint.Clear();
         }
 
-        private void StartTimerIfNeeded(Coordinates3 lastPosition)
+        private void StartTimerIfNeeded(Coordinates3 lastPosition, bool wasPlayingTransition)
         {
             _client.Mumble.Update();
             var newPosition = AvatarPosition;
 
             switch (_startCondition)
             {
-                case StartCondition.Moving: // character moves
-                    if (newPosition.X != lastPosition.X || newPosition.Z != lastPosition.Z)
+                case StartCondition.Moving: // character moves (and was not transitioning, which would be a move too)
+                    if (!wasPlayingTransition && (newPosition.X != lastPosition.X || newPosition.Z != lastPosition.Z))
                     {
                         _lastCheckpoint.Clear();
                         _timer.Start();
@@ -393,7 +397,7 @@ namespace LiveSplit.GW2SAB
         private void StartTimerIfNeeded()
         {
             var lastPosition = AvatarPosition;
-            StartTimerIfNeeded(lastPosition);
+            StartTimerIfNeeded(lastPosition, noTickUpdateCount > MaxSkippedTicks);
         }
     }
 }
