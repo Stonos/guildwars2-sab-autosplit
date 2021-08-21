@@ -290,7 +290,8 @@ namespace LiveSplit.GW2SAB
                         _timer.Pause();
                         wasAutoPaused = true;
                         Log.Info($"Pausing after a loading screen");
-                    } else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Exclude && wasAutoPaused)
+                    } else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Exclude && wasAutoPaused
+                        && !IsTransitioning())   // if paused in transition, which is not a loading screen, do not unpause, probably character select after restart
                     {
                         _timer.Pause();
                         wasAutoPaused = false;
