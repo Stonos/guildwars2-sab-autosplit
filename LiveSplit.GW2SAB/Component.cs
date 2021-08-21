@@ -35,11 +35,12 @@ namespace LiveSplit.GW2SAB
     }
     public class Component : IComponent
     {
-        private const int MaxSkippedTicks = 5;
+        private int MaxSkippedTicks;
         private readonly Gw2Client _client;
         private TimerModel _timer;
         private IDictionary<int, int> _lastCheckpoint = new Dictionary<int, int>();
         private bool wasPlayingTransition;
+        private bool wasAutoPaused;
         private IDictionary<int, IList<Checkpoint>> _checkpoints;
         private int noTickUpdateCount;
         private bool _CachedScreenshotLoadingScreenResult;
@@ -91,13 +92,15 @@ namespace LiveSplit.GW2SAB
 
             //TODO: Make this real Settings
             var jsonConfig = File.ReadAllText("Components\\GW2SAB\\gw2sab_config.json");
-            var raw_config = JsonSerializer.Deserialize<Dictionary<String, String>>(jsonConfig);
+            var raw_config = JsonSerializer.Deserialize<Dictionary<String, String>>(jsonConfig, options);
             var raw_LoadingScreen = raw_config.GetValueOrDefault("LoadingScreens", "Include");
             var raw_StartCondition = raw_config.GetValueOrDefault("StartCondition", "Moving");
             var raw_PauseOnExit = raw_config.GetValueOrDefault("PauseOnExit", "true");
+            var raw_MaxSkippedTicks = raw_config.GetValueOrDefault("MaxSkippedTicks", "3");
             if (!LoadingScreen.TryParse(raw_LoadingScreen, true, out _loadingScreen)) _loadingScreen = LoadingScreen.Include;
             if (!StartCondition.TryParse(raw_StartCondition, true, out _startCondition)) _startCondition = StartCondition.Moving;
             if (!Boolean.TryParse(raw_PauseOnExit, out _pauseOnExit)) _pauseOnExit = true;
+            if (!int.TryParse(raw_MaxSkippedTicks, out MaxSkippedTicks)) MaxSkippedTicks = 3;
         }
 
         private void LoadCheckpoints()
@@ -143,9 +146,29 @@ namespace LiveSplit.GW2SAB
         {
         }
 
+        public Process GetGW2Process()
+        {
+            Process proc = null;
+            int mumbleid = ((int)_client.Mumble.ProcessId);
+            if (!(mumbleid == 0)) // mumble has data, may or may not be correct
+            {
+                try
+                {
+                    proc = Process.GetProcessById(mumbleid);
+                }
+                catch (ArgumentException) { }
+            }
+            if (proc == null) // mumble had no / wrong id, try by name
+            {
+                var tmp = Process.GetProcessesByName("Gw2-64");
+                if (tmp.Length > 0) proc = tmp[0];
+            }
+            return proc;
+        }
+
         public Bitmap TakeScreenShot(double bottom_perc)
         {
-            Process proc = Process.GetProcessById(((int)_client.Mumble.ProcessId));
+            Process proc = GetGW2Process();
             var rect = new User32.Rect();
             User32.GetWindowRect(proc.MainWindowHandle, ref rect);
             int width = rect.right - rect.left;
@@ -173,28 +196,21 @@ namespace LiveSplit.GW2SAB
                 }
             }
             var i = (counter / (double)(a.Width * a.Height));
-            return i >= 0.60;
+            return i >= 0.80 && !(i == 1);
         }
 
-        public bool IsLoading()
+        public bool IsLoading(bool force_recheck=false)
         {
             if (!(noTickUpdateCount > MaxSkippedTicks)) // not transitioning, will invalidate cache
             {
                 _CachedScreenshotLoadingScreenResult = false;
                 return false;
-            } else if (_CachedScreenshotLoadingScreenResult) return true; // transitioning and screenshot from cache aproved
+            } else if (_CachedScreenshotLoadingScreenResult && !force_recheck) return true; // transitioning and screenshot from cache aproved
             else    // a transition is happening, but loading screen has to be confirmed by snapshot
             {
                 _CachedScreenshotLoadingScreenResult = IsMostlyBlack(TakeScreenShot(0.1));
                 return _CachedScreenshotLoadingScreenResult;
             }
-        }
-
-        public bool IsLoading(bool force_recheck)
-        {
-            // when starting the timer for the first time thic can be usefull
-            if (force_recheck) _CachedScreenshotLoadingScreenResult = IsMostlyBlack(TakeScreenShot(0.1));
-            return IsLoading();
         }
 
         public bool IsTransitioning() { return noTickUpdateCount > MaxSkippedTicks; }
@@ -207,15 +223,14 @@ namespace LiveSplit.GW2SAB
 
             // Check if the Game has closed, but only if it was running before.
             // this check should save the overhead of a syscall when not transitioning
-            if (_pauseOnExit && IsTransitioning())
+            if (_pauseOnExit && IsTransitioning() && GetGW2Process() == null)
             {
-                try { Process.GetProcessById((int)_client.Mumble.ProcessId); }
-                catch (ArgumentException)
+                if (state.CurrentPhase == TimerPhase.Running)
                 {
-                    _client.Mumble.Update();
-                    if (state.CurrentPhase == TimerPhase.Running) _timer.Pause();
-                    return;
+                    _timer.Pause();
+                    wasAutoPaused = true;
                 }
+                return;
             }
 
             // need to remember transition state before update, since position will not be updated
@@ -249,7 +264,6 @@ namespace LiveSplit.GW2SAB
             var avatarPosition = AvatarPosition;
             Log.Info($"\n[{avatarPosition.X}, {avatarPosition.Z}],");
 
-
             if (_loadingScreen != LoadingScreen.Include)
             {
                 // Loading-Screen Start
@@ -258,12 +272,14 @@ namespace LiveSplit.GW2SAB
                     if (state.CurrentPhase == TimerPhase.Running && _loadingScreen == LoadingScreen.Exclude)
                     {
                         _timer.Pause();
-                        Log.Info($"Pausing during a loading screen");
+                        wasAutoPaused = true;
+                        Log.Info("Pausing during a loading screen");
                     }
-                    else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Only)
+                    else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Only && wasAutoPaused)
                     {
                         _timer.Pause();
-                        Log.Info($"Starting to time loading screen");
+                        wasAutoPaused = false;
+                        Log.Info("Starting to time loading screen");
                     }
                 }
                 // Not Loading-Screen
@@ -272,10 +288,12 @@ namespace LiveSplit.GW2SAB
                     if (state.CurrentPhase == TimerPhase.Running && _loadingScreen == LoadingScreen.Only)
                     {
                         _timer.Pause();
+                        wasAutoPaused = true;
                         Log.Info($"Pausing after a loading screen");
-                    } else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Exclude)
+                    } else if (state.CurrentPhase == TimerPhase.Paused && _loadingScreen == LoadingScreen.Exclude && wasAutoPaused)
                     {
                         _timer.Pause();
+                        wasAutoPaused = false;
                         Log.Info($"Starting after a loading screen");
                     }
                 }
@@ -343,11 +361,13 @@ namespace LiveSplit.GW2SAB
             _timer = new TimerModel {CurrentState = state};
             _timer.OnReset += state_onReset;
             _client.Mumble.Update();
+            wasAutoPaused = false;
         }
 
         private void state_onReset(object sender, TimerPhase timerPhase)
         {
             _lastCheckpoint.Clear();
+            wasAutoPaused = false;
         }
 
         private void StartTimerIfNeeded(Coordinates3 lastPosition, bool wasPlayingTransition)
@@ -362,7 +382,11 @@ namespace LiveSplit.GW2SAB
                     {
                         _lastCheckpoint.Clear();
                         _timer.Start();
-                        if (_loadingScreen == LoadingScreen.Only) _timer.Pause(); // immeadiatly pause until loadingscreen starts
+                        if (_loadingScreen == LoadingScreen.Only)
+                        {
+                            _timer.Pause(); // immeadiatly pause until loadingscreen starts
+                            wasAutoPaused = true;
+                        }
                     }
                     break;
 
@@ -371,7 +395,11 @@ namespace LiveSplit.GW2SAB
                     {
                         _lastCheckpoint.Clear();
                         _timer.Start();
-                        if (_loadingScreen == LoadingScreen.Exclude) _timer.Pause(); // immeadiatly pause until loadingscreen ends
+                        if (_loadingScreen == LoadingScreen.Exclude)
+                        {
+                            _timer.Pause(); // immeadiatly pause until loadingscreen ends
+                            wasAutoPaused = true;
+                        }
                     }
                     break;
 
@@ -380,7 +408,11 @@ namespace LiveSplit.GW2SAB
                     {
                         _lastCheckpoint.Clear();
                         _timer.Start();
-                        if (_loadingScreen == LoadingScreen.Only) _timer.Pause(); // immeadiatly pause until next loadingscreen starts
+                        if (_loadingScreen == LoadingScreen.Only)
+                        {
+                            _timer.Pause(); // immeadiatly pause until next loadingscreen starts
+                            wasAutoPaused = true;
+                        }
                     }
                     break;
 
@@ -389,7 +421,11 @@ namespace LiveSplit.GW2SAB
                     {
                         _lastCheckpoint.Clear();
                         _timer.Start();
-                        if (_loadingScreen == LoadingScreen.Only) _timer.Pause(); // immeadiatly pause until next loadingscreen starts
+                        if (_loadingScreen == LoadingScreen.Only)
+                        {
+                            _timer.Pause(); // immeadiatly pause until next loadingscreen starts
+                            wasAutoPaused = true;
+                        }
                     }
                     break;
             }

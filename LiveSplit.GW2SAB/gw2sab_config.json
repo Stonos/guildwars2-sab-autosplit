@@ -1,5 +1,6 @@
 {
     "LoadingScreens": "include",
     "StartCondition": "moving",
-    "PauseOnExit": "true"
+    "PauseOnExit": "true",
+    "MaxSkippedTicks":  "3"
 }
