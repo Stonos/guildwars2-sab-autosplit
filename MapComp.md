@@ -4,6 +4,7 @@ The easiest way to do this is to use two installations of LiveSplit simultaneous
 One of which times your gameplay excluding loading screens and the other one times only your loading screens.
 Using this method should produce times with accuracy down to a few seconds.
 ## Setup
+0. You can watch this [video tutorial](https://youtu.be/s3Vweo2-Pcs) if you want.
 1. Install LiveSplit + this Component in two different directories.
 2. Edit both your layouts and add the component.
 3. Load your Splits in one of the instances.
