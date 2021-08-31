@@ -26,6 +26,8 @@ Some features can be configured in [gw2sab_config.json](https://github.com/Atlan
 - ``StartCondition`` Allows the timer to start on ``moving`` (default), ``loading``-screens, anything ``notLoading``-screen (includes character select), ``notTransitioning`` (does not start on character select) or ``manual``.
 - ``PauseOnExit`` if set to ``true`` (default) will pause the timer when exiting the game. When resuming the first loading-screen will not automatically be timed in ``only``-Mode.
 - ``MaxSkippedTicks`` determines how many update cycles it takes notice a transition happening. The default is 3.
+- ``BlackBarSize`` determines the percentage of your screen which is scanned for the black bar which appears durcing loading-screens. 0.1 = 10% is fine for 1080p screens. Higher resolutions need to go lower in percentage.
+- ``BlackPixelPercentage`` determines the percentage of pixels in that area which need to be black during a loading-screens. Default is 0.8 = 80%.
 
 ## How it works
 It works by reading the player's position using the [MumbleLink API](https://wiki.guildwars2.com/wiki/API:MumbleLink), and comparing it to a [list of known checkpoint locations](https://github.com/Stonos/guildwars2-sab-autosplit/blob/master/LiveSplit.GW2SAB/gw2sab_checkpoints.json).  

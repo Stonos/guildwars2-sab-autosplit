@@ -47,6 +47,8 @@ namespace LiveSplit.GW2SAB
         private LoadingScreen _loadingScreen;
         private StartCondition _startCondition;
         private bool _pauseOnExit;
+        private double _blackBarSize;
+        private double _blackPixelPercentage;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
@@ -97,10 +99,14 @@ namespace LiveSplit.GW2SAB
             var raw_StartCondition = raw_config.GetValueOrDefault("StartCondition", "Moving");
             var raw_PauseOnExit = raw_config.GetValueOrDefault("PauseOnExit", "true");
             var raw_MaxSkippedTicks = raw_config.GetValueOrDefault("MaxSkippedTicks", "3");
+            var raw_BlackBarSize = raw_config.GetValueOrDefault("BlackBarSize", "0.1");
+            var raw_BlackPixelPercentage = raw_config.GetValueOrDefault("BlackPixelPercentage", "0.8");
             if (!LoadingScreen.TryParse(raw_LoadingScreen, true, out _loadingScreen)) _loadingScreen = LoadingScreen.Include;
             if (!StartCondition.TryParse(raw_StartCondition, true, out _startCondition)) _startCondition = StartCondition.Moving;
             if (!Boolean.TryParse(raw_PauseOnExit, out _pauseOnExit)) _pauseOnExit = true;
             if (!int.TryParse(raw_MaxSkippedTicks, out MaxSkippedTicks)) MaxSkippedTicks = 3;
+            if (!double.TryParse(raw_BlackBarSize, out _blackBarSize)) _blackBarSize = 0.1f;
+            if (!double.TryParse(raw_BlackPixelPercentage, out _blackPixelPercentage)) _blackPixelPercentage = 0.8f;
         }
 
         private void LoadCheckpoints()
@@ -181,7 +187,7 @@ namespace LiveSplit.GW2SAB
             }
             return bmp;
         }
-        public static bool IsMostlyBlack(Bitmap a)
+        public bool IsMostlyBlack(Bitmap a)
         {
             int counter = 0;
             for (int x = 0; x < a.Width; x++)
@@ -196,7 +202,7 @@ namespace LiveSplit.GW2SAB
                 }
             }
             var i = (counter / (double)(a.Width * a.Height));
-            return i >= 0.80 && !(i == 1);
+            return i >= _blackPixelPercentage && !(i == 1);
         }
 
         public bool IsLoading(bool force_recheck=false)
@@ -208,7 +214,7 @@ namespace LiveSplit.GW2SAB
             } else if (_CachedScreenshotLoadingScreenResult && !force_recheck) return true; // transitioning and screenshot from cache aproved
             else    // a transition is happening, but loading screen has to be confirmed by snapshot
             {
-                _CachedScreenshotLoadingScreenResult = IsMostlyBlack(TakeScreenShot(0.1));
+                _CachedScreenshotLoadingScreenResult = IsMostlyBlack(TakeScreenShot(_blackBarSize));
                 return _CachedScreenshotLoadingScreenResult;
             }
         }
