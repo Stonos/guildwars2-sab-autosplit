@@ -1,0 +1,8 @@
+{
+    "LoadingScreens": "include",
+    "StartCondition": "moving",
+    "PauseOnExit": "true",
+    "MaxSkippedTicks": "3",
+    "BlackBarSize": "0.07",
+    "BlackPixelPercentage":  "0.8"
+}
