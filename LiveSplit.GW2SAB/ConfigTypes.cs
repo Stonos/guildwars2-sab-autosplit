@@ -1,4 +1,4 @@
-﻿namespace LiveSplit.GW2SAB.checkpoint
+﻿namespace LiveSplit.GW2SAB
 {
     public enum LoadingScreen
     {

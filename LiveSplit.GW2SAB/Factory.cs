@@ -1,14 +1,10 @@
-﻿using LiveSplit.Model;
+﻿using System;
+using LiveSplit.Model;
 using LiveSplit.UI.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LiveSplit.GW2SAB
 {
-    class Factory : IComponentFactory
+    internal class Factory : IComponentFactory
     {
         public string ComponentName => "Guild Wars 2 Super Adventure Box auto splitter";
 
