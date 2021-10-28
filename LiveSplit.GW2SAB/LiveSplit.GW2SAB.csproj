@@ -100,18 +100,13 @@
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="gw2sab_config.json" />
-    <None Include="packages.config" />
+    <GW2SAB Include="GW2SAB\**\*.*"/>
+    <BinFiles Include="$(TargetDir)\$(TargetName).*"/>
+    <None Include="packages.config"/>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="gw2sab_checkpoints.json" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-            copy /Y "$(TargetDir)$(TargetName).*" "$(SolutionDir)\..\Components\"
-            copy /Y "$(ProjectDir)gw2sab_checkpoints.json" "$(SolutionDir)\..\Components\GW2SAB\"
-            copy /Y "$(ProjectDir)gw2sab_config.json" "$(SolutionDir)\..\Components\GW2SAB\"
-        </PostBuildEvent>
-  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="@(GW2SAB)" DestinationFolder="$(SolutionDir)\..\Components\GW2SAB\%(RecursiveDir)" SkipUnchangedFiles="true"/>
+    <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(SolutionDir)\..\Components\%(RecursiveDir)" SkipUnchangedFiles="true"/>
+  </Target>
 </Project>
