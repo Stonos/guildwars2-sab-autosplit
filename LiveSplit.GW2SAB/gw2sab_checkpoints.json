@@ -995,10 +995,9 @@
       "Name": "Twin Largos Transition",
       "Area": {
         "AreaType": "circle",
-        "Center": [-55.56996759999999, -258.0187118],
-        "Radius": 10
+        "Center": [113.0749740600586, -344.4687805175781],
+        "Radius": 30
       },
-      "CombatStatus": "OutOfCombat",
       "CheckpointType": "checkpoint"
     }, {
       "Name": "Twin Largos",
@@ -1013,8 +1012,8 @@
       "Name": "Qadim Transition",
       "Area": {
         "AreaType": "circle",
-        "Center": [370.80639579999996, 179.3459964],
-        "Radius": 15
+        "Center": [358.6770935058594, 295.2510070800781],
+        "Radius": 150
       },
       "CombatStatus": "OutOfCombat",
       "CheckpointType": "checkpoint"
@@ -1042,8 +1041,8 @@
       "Name": "Adina Transition",
       "Area": {
         "AreaType": "circle",
-        "Center": [41.0693362, -195.6637692],
-        "Radius": 10
+        "Center": [77.97672999999999, -24.7664986],
+        "Radius": 20
       },
       "CheckpointType": "checkpoint"
     }, {
@@ -1077,8 +1076,8 @@
       "Name": "Qadim 2 Transition",
       "Area": {
         "AreaType": "circle",
-        "Center": [41.9638988, -13.3871462],
-        "Radius": 15
+        "Center": [12.8775968, 133.8149724],
+        "Radius": 50
       },
       "CheckpointType": "checkpoint"
     }, {
