@@ -34,7 +34,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Gw2Sharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\packages\Gw2Sharp.1.1.0\lib\netstandard2.0\Gw2Sharp.dll</HintPath>
+            <HintPath>..\packages\Gw2Sharp.1.4.0\lib\netstandard2.0\Gw2Sharp.dll</HintPath>
             <Private>True</Private>
         </Reference>
         <Reference Include="LiveSplit.Core">
