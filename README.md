@@ -40,5 +40,6 @@ This means that in order to see your final time, you must wait until you get tel
 
 ## How to Develop (for .Net newbies)
 1. Download [LiveSplit](https://livesplit.org/downloads)
-2. Clone / Unzip this Repository inside the LiveSplit directory
-3. Open the Project in Visual Studio and fetch dependencies with NuGet
+2. Clone / Unzip this Repository
+3. Create an environment variable or a global MSBuild property called `LiveSplitPath`. This should be set to the location where LiveSplit is installed, and it will be used to automatically copy the compiled files there. If `LiveSplitPath` is not defined, then the files will be placed in a directory called `out`, and you will have to copy them manually to the LiveSplit directory.
+4. Open the Project in Visual Studio and fetch dependencies with NuGet
