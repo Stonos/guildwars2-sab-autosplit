@@ -1,0 +1,45 @@
+name: .NET
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Restore nuget dependencies
+        run: nuget restore
+
+      - name: Restore dotnet dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Generate filename
+        run: |
+          chcp 65001
+          echo ("OUTPUT_FILENAME=LiveSplit.GW2SAB_" + $env:GITHUB_REF.replace('refs/tags/', '') + ".zip") >> $env:GITHUB_ENV
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          filename: ${{ env.OUTPUT_FILENAME }}
+          path: './LiveSplit.GW2SAB/out/*'
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.OUTPUT_FILENAME }}
