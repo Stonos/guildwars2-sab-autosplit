@@ -36,7 +36,7 @@
             <Private>True</Private>
         </Reference>
         <Reference Include="LiveSplit.Core">
-            <HintPath>..\..\LiveSplit.Core.dll</HintPath>
+            <HintPath>..\libs\LiveSplit.Core.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
             <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -84,7 +84,7 @@
         <Reference Include="System.Xml"/>
         <Reference Include="UpdateManager, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
             <SpecificVersion>False</SpecificVersion>
-            <HintPath>..\..\UpdateManager.dll</HintPath>
+            <HintPath>..\libs\UpdateManager.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>
