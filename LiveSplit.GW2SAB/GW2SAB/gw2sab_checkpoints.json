@@ -1038,7 +1038,7 @@
       },
       "CheckpointType": "checkpoint"
     }, {
-      "Name": "Adina Transition",
+      "Name": "Adina Pre-event",
       "Area": {
         "AreaType": "circle",
         "Center": [77.97672999999999, -24.7664986],
@@ -1046,16 +1046,7 @@
       },
       "CheckpointType": "checkpoint"
     }, {
-      "Name": "Adina",
-      "Area": {
-        "AreaType": "circle",
-        "Center": [381.5593334, -36.170743],
-        "Radius": 25
-      },
-      "CombatStatus": "InCombat",
-      "CheckpointType": "checkpoint"
-    }, {
-      "Name": "Sabir Transition",
+      "Name": "Sabir Pre-event",
       "Area": {
         "AreaType": "circle",
         "Center": [-14.102765799999998, -52.338427200000005],
@@ -1069,6 +1060,15 @@
         "Center": [-294.3194774, 97.7851994],
         "Radius": 15,
         "MinimumHeight": 50.0
+      },
+      "CombatStatus": "InCombat",
+      "CheckpointType": "checkpoint"
+    }, {
+      "Name": "Adina",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [381.5593334, -36.170743],
+        "Radius": 25
       },
       "CombatStatus": "InCombat",
       "CheckpointType": "checkpoint"
