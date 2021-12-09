@@ -711,8 +711,9 @@
       "Area": {
         "AreaType": "circle",
         "Center": [-126.24543762207031, -456.1111145019531],
-        "Radius": 16
+        "Radius": 42
       },
+      "CombatStatus": "OutOfCombat",
       "CheckpointType": "checkpoint"
     }, {
       "Name": "Gorseval",
