@@ -1023,7 +1023,7 @@
       "Area": {
         "AreaType": "circle",
         "Center": [-190.0184668, 305.1096514],
-        "Radius": 40
+        "Radius": 120
       },
       "CombatStatus": "InCombat",
       "CheckpointType": "checkpoint"
