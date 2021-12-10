@@ -361,16 +361,7 @@
       <SegmentHistory />
     </Segment>
     <Segment>
-      <Name>Adina Pre-event</Name>
-      <Icon />
-      <SplitTimes>
-        <SplitTime name="Personal Best" />
-      </SplitTimes>
-      <BestSegmentTime />
-      <SegmentHistory />
-    </Segment>
-    <Segment>
-      <Name>Sabir Pre-event</Name>
+      <Name>Sabir Transition</Name>
       <Icon />
       <SplitTimes>
         <SplitTime name="Personal Best" />

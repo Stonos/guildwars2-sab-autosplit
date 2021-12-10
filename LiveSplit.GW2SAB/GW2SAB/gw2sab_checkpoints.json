@@ -1039,19 +1039,11 @@
       },
       "CheckpointType": "checkpoint"
     }, {
-      "Name": "Adina Pre-event",
+      "Name": "Sabir Transition",
       "Area": {
         "AreaType": "circle",
         "Center": [77.97672999999999, -24.7664986],
         "Radius": 20
-      },
-      "CheckpointType": "checkpoint"
-    }, {
-      "Name": "Sabir Pre-event",
-      "Area": {
-        "AreaType": "circle",
-        "Center": [-14.102765799999998, -52.338427200000005],
-        "Radius": 25
       },
       "CheckpointType": "checkpoint"
     }, {
