@@ -4,6 +4,8 @@
     {
         Checkpoint,
         Boss,
-        StartingArea
+        StartingArea,
+        PauseTimer,
+        ResetTimer,
     }
 }

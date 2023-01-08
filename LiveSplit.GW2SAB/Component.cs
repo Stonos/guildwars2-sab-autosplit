@@ -50,6 +50,7 @@ namespace LiveSplit.GW2SAB
         private bool _pauseOnExit;
         private double _blackBarSize;
         private double _blackPixelPercentage;
+        private Checkpoint _lastResetCheckpoint;
 
         private Coordinates3 AvatarPosition => _client.Mumble.AvatarPosition;
 
@@ -180,7 +181,7 @@ namespace LiveSplit.GW2SAB
         private Process GetGw2Process()
         {
             Process proc = null;
-            var mumbleId = (int) _client.Mumble.ProcessId;
+            var mumbleId = (int)_client.Mumble.ProcessId;
             if (mumbleId != 0) // mumble has data, may or may not be correct
             {
                 try
@@ -208,13 +209,13 @@ namespace LiveSplit.GW2SAB
             User32.GetWindowRect(proc.MainWindowHandle, ref rect);
             var width = rect.right - rect.left;
             var height = rect.bottom - rect.top;
-            var bmp = new Bitmap(width, (int) (height * bottomPercent)); // smaller bitmap
+            var bmp = new Bitmap(width, (int)(height * bottomPercent)); // smaller bitmap
 
             using (var g = Graphics.FromImage(bmp))
             {
                 g.CopyFromScreen(
                     rect.left,
-                    (int) (rect.top + (1 - bottomPercent) * height),
+                    (int)(rect.top + (1 - bottomPercent) * height),
                     0,
                     0,
                     bmp.Size
@@ -239,7 +240,7 @@ namespace LiveSplit.GW2SAB
                 }
             }
 
-            var i = counter / (double) (a.Width * a.Height);
+            var i = counter / (double)(a.Width * a.Height);
             return i >= _blackPixelPercentage && !(i == 1);
         }
 
@@ -310,6 +311,14 @@ namespace LiveSplit.GW2SAB
             {
                 StartTimerIfNeeded(lastPosition, _wasPlayingTransition);
                 return;
+            }
+
+            if (_lastResetCheckpoint != null)
+            {
+                if (!_lastResetCheckpoint.IsPointInArea(lastPosition, false))
+                {
+                    _lastResetCheckpoint = null;
+                }
             }
 
             var playingTransition = IsTransitioning();
@@ -411,12 +420,32 @@ namespace LiveSplit.GW2SAB
                     }
 
                     break;
+
+                case CheckpointType.PauseTimer:
+                    Log.Info($"Pausing timer because player is on {checkpoint.Name}");
+                    if (_timer.CurrentState.CurrentPhase != TimerPhase.Paused)
+                    {
+                        _timer.Pause();
+                    }
+
+                    break;
+
+                case CheckpointType.ResetTimer:
+                    if (_lastResetCheckpoint == null)
+                    {
+                        Log.Info($"Resetting timer because player is on {checkpoint.Name}");
+                        _timer.ResetAndSetAttemptAsPB();
+                        _timer.Start();
+                        _lastResetCheckpoint = checkpoint;
+                    }
+
+                    break;
             }
         }
 
         private void InitTimer(LiveSplitState state)
         {
-            _timer = new TimerModel {CurrentState = state};
+            _timer = new TimerModel { CurrentState = state };
             _timer.OnReset += state_onReset;
             _client.Mumble.Update();
             _wasAutoPaused = false;

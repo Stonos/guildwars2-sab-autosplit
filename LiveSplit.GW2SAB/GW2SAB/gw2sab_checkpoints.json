@@ -1402,5 +1402,129 @@
         "Radius": 10
       }
     }
+  ],
+  "1043": [
+    {
+      "Name": "A Fungus Among Us Checkpoint 1",
+      "Area": {
+        "AreaType": "polygon",
+        "Polygon": [
+          [-325.11761474609375, -473.63787841796875],
+          [-313.4627380371094, -469.98602294921875],
+          [-312.4730224609375, -472.90087890625],
+          [-323.718017578125, -476.7956848144531]
+        ]
+      },
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "A Fungus Among Us Checkpoint 2",
+      "Area": {
+        "AreaType": "polygon",
+        "Polygon": [
+          [-373.8855895996094, -409.126953125],
+          [-371.19281005859375, -398.4763488769531],
+          [-368.7230529785156, -398.713623046875],
+          [-371.43414306640625, -410.2757263183594]
+        ]
+      },
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "A Fungus Among Us Checkpoint 3",
+      "Area": {
+        "AreaType": "polygon",
+        "Polygon": [
+          [-443.23406982421875, -466.4826965332031],
+          [-447.3287048339844, -456.83843994140625],
+          [-445.3825988769531, -453.958984375],
+          [-441.6246032714844, -465.65185546875]
+        ]
+      },
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "A Fungus Among Us Checkpoint 4",
+      "Area": {
+        "AreaType": "polygon",
+        "Polygon": [
+          [-461.9819030761719, -568.90869140625],
+          [-460.17730712890625, -569.5339965820312],
+          [-461.21905517578125, -585.5849609375],
+          [-462.9691162109375, -584.1672973632812]
+        ]
+      },
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "A Fungus Among Us Checkpoint 5",
+      "Area": {
+        "AreaType": "polygon",
+        "Polygon": [
+          [-374.52099609375, -572.8955688476562],
+          [-376.59326171875, -577.3004760742188],
+          [-378.1947937011719, -576.666748046875],
+          [-376.1541442871094, -570.5636596679688]
+        ]
+      },
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "A Fungus Among Us Checkpoint 6",
+      "Area": {
+        "AreaType": "polygon",
+        "Polygon": [
+          [-365.1887512207031, -639.4852905273438],
+          [-363.2144470214844, -638.656494140625],
+          [-360.50628662109375, -647.9649658203125],
+          [-362.6269836425781, -650.1467895507812]
+        ]
+      },
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "A Fungus Among Us Checkpoint 7",
+      "Area": {
+        "AreaType": "polygon",
+        "Polygon": [
+          [-423.0843505859375, -675.0926513671875],
+          [-420.063232421875, -667.8584594726562],
+          [-418.0357971191406, -668.0867309570312],
+          [-420.2875061035156, -675.604736328125]
+        ]
+      },
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "A Fungus Among Us Checkpoint 8",
+      "Area": {
+        "AreaType": "polygon",
+        "Polygon": [
+          [-416.3030700683594, -632.4616088867188],
+          [-414.73516845703125, -633.3255004882812],
+          [-420.9212341308594, -642.7369995117188],
+          [-422.3096008300781, -642.4307250976562]
+        ]
+      },
+      "CheckpointType": "checkpoint"
+    },
+    {
+      "Name": "A Fungus Among Us Checkpoint Reset",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-316.1109619140625, -511.4902648925781],
+        "Radius": 2.5
+      },
+      "CheckpointType": "pauseTimer"
+    },
+    {
+      "Name": "A Fungus Among Us Checkpoint Start",
+      "Area": {
+        "AreaType": "circle",
+        "Center": [-314.59600830078125, -507.83270263671875],
+        "Radius": 0.1
+      },
+      "CheckpointType": "resetTimer"
+    }
   ]
 }
