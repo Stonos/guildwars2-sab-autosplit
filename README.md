@@ -7,7 +7,7 @@ This is a LiveSplit Auto Splitter which splits the timer whenever you pass a che
 
 ## How to use
 1. Download [LiveSplit](https://livesplit.org/downloads)
-2. Download the [latest release](https://github.com/Atlan-G/guildwars2-sab-autosplit/releases) of this component
+2. Download the [latest release](https://github.com/Stonos/guildwars2-sab-autosplit/releases) of this component
 3. Extract all the files to LiveSplit's directory
 4. Run LiveSplit
 5. Open the Splits for the zone you intend to run by right clicking and going to **Open Splits - From File** and selecting the appropriate file from the `Components\GW2SAB\Splits` directory
